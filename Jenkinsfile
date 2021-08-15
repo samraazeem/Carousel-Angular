@@ -33,15 +33,17 @@ pipeline{
             steps{
                sh 'npm run test:coverage'
             } 
+        }
+        stage('Sonar Analysis')
             when {
                 branch 'production'
             }
-			      steps{
-				        withSonarQubeEnv('SONAR'){
-					          sh 'npm run sonar'
-				        }
-			      }
-		    }
+			steps{
+				withSonarQubeEnv('SONAR'){
+					sh 'sonar-scanner -Dsonar.projectVersion=${BUILD_NUMBER} -Dsonar.projectKey=test -Dsonar.host.url=http://52.249.217.108:9000 -Dsonar.login=b9b1f74acbea553a843f0af694b9aaeb78daa021'
+				}
+			}
+		}
         /***stage('Docker Image') { 
             steps{
                 
