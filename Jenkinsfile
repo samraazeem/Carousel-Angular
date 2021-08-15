@@ -34,7 +34,7 @@ pipeline{
                sh 'npm run test:coverage'
             } 
         }
-        stage('Sonar Analysis')
+        stage('Sonar Analysis') {
             when {
                 branch 'production'
             }
