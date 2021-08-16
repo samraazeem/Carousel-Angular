@@ -43,68 +43,40 @@ pipeline{
 					sh 'npm run sonar'
 				}
 			}
-		}
-        /***stage('Docker Image') { 
+		stage("Build Docker Image"){
             steps{
-                
-                sh 'docker build -t "samraazeem/angular-carousel":$BUILD_NUMBER"" .'
-                script {
-                    dockerImage= 'samraazeem/angular-carousel":$BUILD_NUMBER"'
+                sh 'docker build -t i-${username}-${BRANCH_NAME}:${BUILD_NUMBER} .'
+            }
+        }
+        stage("Push Docker Image"){
+            steps{
+                sh "docker tag i-${username}-${BRANCH_NAME}:${BUILD_NUMBER} ${dockerUsername}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
+                sh "docker tag i-${username}-${BRANCH_NAME}:${BUILD_NUMBER} ${dockerUsername}/i-${username}-${BRANCH_NAME}"
+                sh "docker push ${dockerUsername}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
+                sh "docker push ${dockerUsername}/i-${username}-${BRANCH_NAME}"
+            }
+        }
+        stage('PreContainer Check'){
+            steps{
+                sh(script: "docker stop c-${username}-${BRANCH_NAME}", returnStatus: true)
+                sh(script: "docker rm -f c-${username}-${BRANCH_NAME}", returnStatus: true)
+            }
+        }
+        stage("Deployment"){
+            parallel{
+                stage('Docker Deployment'){
+                    steps{
+                        sh 'docker run --name c-${username}-${BRANCH_NAME} -d -p ${dockerPort}:80 -e branch=${BRANCH_NAME} i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}'
+                    }
                 }
-                script {
-                    dockerImage= docker.build registry + ":$BUILD_NUMBER"
+                stage('Kubernetes Deployment'){
+                    steps{
+                        sh 'kubectl config use-contexts Istio-Cluster'
+                        sh 'kubectl apply -f ./kubernetes/frontend.yml -n=kubernetes-cluster-samraazeem'
+                        sh 'kubectl apply -f ./kubernetes/backend.yml -n=kubernetes-cluster-samraazeem'
+                    }
                 }
             }
         }
-        stage('Container'){
-            parallel {
-                stage('PreContainer Check'){
-                    steps{
-                        sh 'docker rm -f angular-carousel'
-                    }
-                }
-                stage('Publish DockerHub'){
-                    steps{
-                        script {
-                            docker.withRegistry( '', registryCredential ) {
-                            dockerImage.push()
-                            }
-                        }
-                    }
-                }
-            }  
-        }
-        stage('Docker Deployment'){
-          parallel {
-                stage('Docker Deploy Development'){
-                    steps{
-                        sh 'docker rm -f angular-carousel'
-                        sh 'docker run -d --name angular-carousel -p 7200:80 samraazeem/carousel-angular:"$BUILD_NUMBER"'
-                    }
-                }
-               // stage('Docker Deploy Production'){
-                    steps{
-                        sh 'docker rm -f angular-carousel'
-                        sh 'docker run -d --name angular-carousel -p 7300:80 samraazeem/angular-carousel:"$BUILD_NUMBER"'
-                    }
-               // }
-            //}  
-        } 
-        stage('Kubernetes Deployment'){
-            //parallel {
-            //    stage('Docker Deploy Development'){
-                    steps{
-                      sh 'kubectl version'
-                       // sh 'kubectl apply -f ./kubernetes/frontend.yaml'
-                        //sh 'kubectl apply -f ./kubernetes/backend.yaml'
-                    }
-              //  }
-                stage('Docker Deploy Production'){
-                    steps{
-                        sh 'docker run -d --name angular-carousel -p 7300:80 samraazeem/carousel-angular:"$BUILD_NUMBER"'
-                    }
-                }
-            } 
-        } ***/
     }
 }
