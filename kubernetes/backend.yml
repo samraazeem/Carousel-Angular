@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: angularCarousel
+  name: angular-carousel
 spec:
   selector:
-    app: angularCarousel
+    app: angular-carousel
     tier: backend
   ports:
     - protocol: TCP
@@ -19,19 +19,19 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: angularCarousel
+      app: angular-carousel
       tier: backend
       track: stable
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
-        app: angularCarousel
+        app: angular-carousel
         tier: backend
         track: stable
     spec:
       containers:
-        - name: angularCarousel
+        - name: angular-carousel
           image: "samraazeem/angular-carousel:nagp"
           ports:
             - name: http
