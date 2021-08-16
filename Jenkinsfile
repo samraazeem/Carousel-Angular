@@ -26,11 +26,11 @@ pipeline{
                 sh 'npm run build'  
             }
         }
-        stage('Unit Testing'){
+        /***stage('Unit Testing'){
             steps{
                sh 'npm run test -- --code-coverage'
             } 
-        }
+        }***/
         stage('Sonar Analysis') {
 			steps{
 				withSonarQubeEnv('SONAR'){
