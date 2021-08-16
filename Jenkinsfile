@@ -28,7 +28,7 @@ pipeline{
         }
         stage('Unit Testing'){
             steps{
-               sh 'npm run test:coverage'
+               sh 'npm run test -- --code-coverage'
             } 
         }
         stage('Sonar Analysis') {
