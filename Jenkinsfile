@@ -37,6 +37,7 @@ pipeline{
 					sh 'npm run sonar'
 				}
 			}
+        }
 		stage("Build Docker Image"){
             steps{
                 sh 'docker build -t i-${username}-${BRANCH_NAME}:${BUILD_NUMBER} .'
@@ -74,4 +75,4 @@ pipeline{
         }
     }
 }
-}
+
