@@ -71,8 +71,8 @@ pipeline{
                 stage('Kubernetes Deployment'){
                     steps{
                         sh 'kubectl config use-context Istio-Cluster'
-                        sh 'kubectl apply -f ./kubernetes/frontend.yml -n=kubernetes-cluster-samraazeem'
-                        sh 'kubectl apply -f ./kubernetes/backend.yml -n=kubernetes-cluster-samraazeem'
+                        sh 'kubectl apply -f ./frontend.yml -n=kubernetes-cluster-samraazeem'
+                        sh 'kubectl apply -f ./backend.yml -n=kubernetes-cluster-samraazeem'
                     }
                 }
             }
