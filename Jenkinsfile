@@ -1,9 +1,13 @@
 pipeline{ 
-    environment {
-    registry = "samraazeem/angular-carousel"
-    registryCredential = 'docker'
-    dockerImage= ''
-    }  
+   environment{
+        username= 'samraazeem'
+        dockerPort= "7400"
+        dockerUsername= "samraazeem"
+        registry= "samraazeem/"
+        registryCredential= 'docker'
+        dockerImage= ''
+        kubernetesContext= "Istio-Cluster"
+    }
     agent any 
     tools{
         maven 'MAVEN'
