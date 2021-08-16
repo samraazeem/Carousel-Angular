@@ -5,12 +5,13 @@ metadata:
   name: frontend
 spec:
   selector:
-    app: springmvcform
+    app: angular-carousel
     tier: frontend
   ports:
     - protocol: "TCP"
       port: 80
       targetPort: 80
+      nodePort: 30157
   type: LoadBalancer
 ---
 apiVersion: apps/v1
@@ -20,17 +21,17 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: springmvcform
+      app: angular-carousel
       tier: frontend
       track: stable
   replicas: 1
   template:
     metadata:
       labels:
-        app: springmvcform
+        app: angular-carousel
         tier: frontend
         track: stable
     spec:
       containers:
         - name: nginx
-          image: "samraazeem/maven:nginx1.1"
+          image: "samraazeem/angular-carousel:nginx"
