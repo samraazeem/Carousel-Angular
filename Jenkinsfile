@@ -27,17 +27,11 @@ pipeline{
             }
         }
         stage('Unit Testing'){
-            when {
-                branch 'development'
-            }
             steps{
                sh 'npm run test:coverage'
             } 
         }
         stage('Sonar Analysis') {
-            when {
-                branch 'master'
-            }
 			steps{
 				withSonarQubeEnv('SONAR'){
 					sh 'npm run sonar'
@@ -79,4 +73,5 @@ pipeline{
             }
         }
     }
+}
 }
